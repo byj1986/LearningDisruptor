@@ -20,9 +20,17 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 ## 阅读
 
-内存管理书选读；复习等待策略与容量实验。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [Stopwatch类](https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.stopwatch?view=net-10.0) | Frequency与GetTimestamp；明确ticks换算，区分计时器频率与CPU主频。 | 10分钟 |
+| 复习 | [Disruptor-net等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies) | 结合已有策略实验，说明负载与排队如何进入本日测量边界。 | 10分钟 |
 
-[等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies)；[内存管理书](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 每个时间戳的单位与位置是什么？
+2. 欠发、排队和处理时间如何影响解释？
 
 ## 开始前
 
@@ -39,8 +47,10 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 ## 阅读要点
 
-- Stopwatch.GetTimestamp与Frequency换算；P50/P99的明确计算方法。
-- 理解排队延迟、申请等待、实际发送速率，以及发送端阻塞导致的采样缺口。
+以下为按本日实验重新组织的学习笔记：
+
+- 时间戳差应按Stopwatch.Frequency换算。记录起点是计划发送、实际尝试还是成功入队；这些起点包含的等待不同。
+- 百分位按本日规定的最近秩法计算，并记录样本数。实际发送速率低于目标时同时报告发送滞后，不能只保留较好看的P99。
 
 ## 120分钟执行顺序
 

@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-源码中 RingBuffer、Sequence；书 B 第21章；内存管理书选读。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [垃圾回收的基本知识](https://learn.microsoft.com/zh-cn/dotnet/standard/garbage-collection/fundamentals) | 内存分配、托管堆与代；理解分配量和GC次数是不同指标。 | 8分钟 |
+| 必读 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 定位RingBuffer初始化、槽位访问及Sequence布局；只追踪本日指定符号。 | 12分钟 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)；[内存管理书](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 工厂调用数与消息数是什么关系？
+2. 创建、复用和回收分别发生在哪里？
 
 ## 开始前
 
@@ -37,8 +45,10 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读要点
 
-- 以6.0.1对应提交阅读RingBuffer、Sequence定义及事件工厂调用；书B第21章选读对象分配。
-- 只追踪存储、对象创建、序号字段与布局，暂不试图一次看完全部算法。
+以下为按本日实验重新组织的学习笔记：
+
+- 事件工厂的创建计数只覆盖这些槽位对象，不能代表程序所有分配。日志、装箱、字符串、集合增长都应分别检查；没有GC不等于没有分配。
+- 预分配关注对象生命周期和分配压力；缓存行布局则需另读Sequence源码。GC文章用来理解托管内存，不用来证明缓存行或伪共享的具体效果。
 
 ## 120分钟执行顺序
 

@@ -18,9 +18,19 @@ dotnet run --project "../Day1/Fundamentals.ConcurrencyLab.csproj"
 
 ## 阅读
 
-书 B 第29章；Volatile、Interlocked、同步原语。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [Volatile类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.volatile?view=net-10.0) | 注解（Remarks）中的x/y发布示例，分别跟踪数据与标志的读写先后。 | 8分钟 |
+| 查阅 | [Interlocked类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.interlocked?view=net-10.0) | CompareExchange的比较、替换、返回旧值与失败重试。 | 5分钟 |
+| 查阅 | [ManualResetEventSlim类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.manualreseteventslim?view=net-10.0) | 示例及Set、Wait、超时；理解初始无信号状态。 | 7分钟 |
+| 选读 | [The C# Memory Model in Theory and Practice（英文进阶）](https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/december/csharp-the-csharp-memory-model-in-theory-and-practice) | Thread Communication Patterns相关部分；这是2012年的概念文章，运行时细节按当前API和实验核对。 | 核心完成后 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[同步原语](https://learn.microsoft.com/en-us/dotnet/standard/threading/overview-of-synchronization-primitives)；[Interlocked](https://learn.microsoft.com/en-us/dotnet/api/system.threading.interlocked)；[Volatile](https://learn.microsoft.com/en-us/dotnet/api/system.threading.volatile?view=net-10.0)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 发布标志前后各允许观察哪些数据？
+2. CAS更新失败和等待通知超时应该怎样识别？
 
 ## 开始前
 
@@ -37,8 +47,10 @@ Volatile发布、信号通知、CAS递增三个练习及超时用例。
 
 ## 阅读要点
 
-- 书B第29章中Interlocked与内存顺序相关内容；微软Volatile文档的发布标志示例。
-- 识别CompareExchange的返回值；阅读ManualResetEventSlim.Wait超时与Set的作用。
+以下为按本日实验重新组织的学习笔记：
+
+- 原子性关心操作能否被拆开，可见性和排序关心另一线程能观察到什么。Volatile提供特定读写排序语义，不把++变成原子操作，也不无条件保证读取立刻看到最新值。
+- CAS重试与事件通知是两种不同工作：前者竞争一次条件更新，后者协调等待者。每轮用独立状态，避免把复位与复用协议混进单次发布实验。
 
 ## 120分钟执行顺序
 

@@ -18,9 +18,20 @@ dotnet run --project "Fundamentals.ConcurrencyLab.csproj"
 
 ## 阅读
 
-书 A 第1章、第2章等待任务与异常处理；书 B 第26章。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [使用线程和线程处理](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/using-threads-and-threading) | 创建和启动新线程；Join等待线程结束；Sleep暂停当前线程。暂不读旧版Thread.Abort内容。 | 6分钟 |
+| 必读 | [使用async和await进行异步编程](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/) | 重点找Task.WhenAll、异步异常与await的示例；无需抄完整早餐程序。 | 9分钟 |
+| 查阅 | [基于任务的异步编程](https://learn.microsoft.com/zh-cn/dotnet/standard/parallel-programming/task-based-asynchronous-programming) | 开头任务抽象及显式创建运行任务，定位Task.Run。 | 5分钟 |
+| 选读 | [托管线程池](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/the-managed-thread-pool) | 线程池特征：线程复用、后台线程；先不调整线程池参数。 | 核心完成后 |
+| 选读 | [异步编程场景](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios) | 探索异步编程模型；查看基础概念；对照I/O型与CPU型工作。 | 核心完成后 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[书 A](https://www.oreilly.com.cn/index.php?func=book&isbn=978-7-115-55060-6)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 谁负责执行，谁表示完成？
+2. 等待全部任务和接收异常分别在哪里发生？
 
 ## 开始前
 
@@ -37,8 +48,10 @@ dotnet run --project "Fundamentals.ConcurrencyLab.csproj"
 
 ## 阅读要点
 
-- 书A第1章只区分并发、并行、异步，第2章只读等待一组任务与异常传播；书B第26章看线程启动、Join、线程池。
-- 查清Thread、Task.Run、Task.WhenAll、Task.Delay各自返回什么；先不用研究编译器状态机。
+以下为按本日实验重新组织的学习笔记：
+
+- Thread用于管理线程；Task表示操作及其完成状态。Task.Run通常把工作交给默认线程池，await用于等待完成，不承诺新建独占线程。
+- 只记录谁启动工作、谁等待完成、异常由谁观察。先启动两个任务再等待，与做完第一个才启动第二个，是不同的执行安排。
 
 ## 120分钟执行顺序
 

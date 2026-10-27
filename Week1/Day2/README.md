@@ -18,9 +18,18 @@ dotnet run --project "../Day1/Fundamentals.ConcurrencyLab.csproj"
 
 ## 阅读
 
-书 A 第12章阻塞锁；书 B 第29、30章相关部分；同步原语、Interlocked。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [lock语句](https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/statements/lock) | 语句语义与准则；区分专用Lock实例和object锁的Monitor路径。 | 8分钟 |
+| 必读 | [Interlocked类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.interlocked?view=net-10.0) | 定义及注解，查找Increment、CompareExchange的作用。 | 7分钟 |
+| 查阅 | [同步基元概述](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/overview-of-synchronization-primitives) | 只读对共享资源的访问同步，重点是同一同步实例保护同一资源。 | 5分钟 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[书 A](https://www.oreilly.com.cn/index.php?func=book&isbn=978-7-115-55060-6)；[同步原语](https://learn.microsoft.com/en-us/dotnet/standard/threading/overview-of-synchronization-primitives)；[Interlocked](https://learn.microsoft.com/en-us/dotnet/api/system.threading.interlocked)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 哪里可能发生丢失更新？
+2. 一个原子更新与一段临界区各自保护什么？
 
 ## 开始前
 
@@ -37,8 +46,10 @@ dotnet run --project "../Day1/Fundamentals.ConcurrencyLab.csproj"
 
 ## 阅读要点
 
-- 书A第12章12.1阻塞锁；书B第29章原子操作与第30章混合同步的相关小节。
-- 读Interlocked.Increment说明；把count++拆成读取、加一、写回三步。
+以下为按本日实验重新组织的学习笔记：
+
+- count++包含读取、计算、写回；单次读写的原子性不代表整个更新原子。Interlocked适合指定的原子更新，lock可以把多步不变量一起保护。
+- 本项目使用.NET 10，可学习专用System.Threading.Lock；若用object锁则理解Monitor路径。两种选择都要求参与线程共享同一个用于保护该资源的锁实例。
 
 ## 120分钟执行顺序
 

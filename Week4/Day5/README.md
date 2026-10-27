@@ -18,9 +18,18 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-等待策略文档与对应版本实现；书 B 线程调度相关内容。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [线程调度](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/scheduling-threads) | 文章开头的优先级、时间片与操作系统差异；无需运行大段优先级示例。 | 6分钟 |
+| 必读 | [Disruptor-net等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies) | 内置策略、设计说明及版本变化；接口以6.0.1源码为准。 | 10分钟 |
+| 查阅 | [SpinWait（英文API参考）](https://learn.microsoft.com/en-us/dotnet/api/system.threading.spinwait?view=net-10.0) | Remarks及NextSpinWillYield、SpinOnce；理解自旋与让出，不抄旧式普通bool示例作为发布协议。 | 4分钟 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 哪段在等生产者，哪段在等依赖？
+2. 空闲CPU和负载下响应应该怎样同时记录？
 
 ## 开始前
 
@@ -37,8 +46,10 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读要点
 
-- 等待策略文档，6.0.1的IWaitStrategy.WaitFor和三种策略实现。
-- 区分等待生产者新发布与等待前置消费者两条等待路径；不使用7.x的ISequenceWaiter解释6.0.1。
+以下为按本日实验重新组织的学习笔记：
+
+- 线程是否得到执行由调度与可用资源共同决定。自旋、让出和阻塞会带来不同CPU成本，不能由一轮实验推导固定延迟保证。
+- 分别观察等待新事件和等待前置阶段的路径。生产者满时策略仍需单独定义，不能从消费者等待策略的名字推断出来。
 
 ## 120分钟执行顺序
 

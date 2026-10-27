@@ -20,9 +20,19 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 ## 阅读
 
-内存管理书中的测量与分配章节；复习Stopwatch与GC统计。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 查阅 | [Stopwatch类](https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.stopwatch?view=net-10.0) | 注解与Elapsed、Frequency；明确墙钟计时边界。 | 6分钟 |
+| 查阅 | [GC.GetTotalAllocatedBytes（英文API参考）](https://learn.microsoft.com/en-us/dotnet/api/system.gc.gettotalallocatedbytes?view=net-10.0) | Definition与precise参数；进程累计托管分配，排除原生分配。 | 5分钟 |
+| 查阅 | [Process.TotalProcessorTime属性](https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.process.totalprocessortime?view=net-10.0) | 定义和属性值，区分进程CPU时间与墙钟时间。 | 5分钟 |
+| 查阅 | [GC.CollectionCount（英文API参考）](https://learn.microsoft.com/en-us/dotnet/api/system.gc.collectioncount?view=net-10.0) | 参数与返回值；按代读取进程启动以来累计次数。 | 4分钟 |
 
-[内存管理书](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 分子与分母是否覆盖相同事件区间？
+2. 初始化、预热、采样和排空分别计在哪里？
 
 ## 开始前
 
@@ -39,8 +49,10 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 ## 阅读要点
 
-- Stopwatch、Process.TotalProcessorTime、GC.GetTotalAllocatedBytes及GC.CollectionCount的计量含义。
-- 选读内存管理书的Memory Measurements、Memory Allocation；先明确计时和统计范围。
+以下为按本日实验重新组织的学习笔记：
+
+- 累计分配取区间前后差，不是当前存活内存；跨线程实验不能只测当前线程。precise=true有额外成本，采样放在边界并保持两边口径一致。
+- Elapsed与TotalProcessorTime测量不同维度；各代CollectionCount也应取区间差。不要因为GC次数为零就把分配量写成零。
 
 ## 120分钟执行顺序
 

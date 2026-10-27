@@ -18,9 +18,17 @@ dotnet run --project "Fundamentals.ChannelLab.csproj"
 
 ## 阅读
 
-书 A 第9章队列、第10章取消；Channels 文档。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [System.Threading.Channels库](https://learn.microsoft.com/zh-cn/dotnet/core/extensions/channels) | 基本用法、边界限制策略；查找BoundedChannelFullMode.Wait、WriteAsync、ReadAllAsync、Complete/TryComplete。 | 12分钟 |
+| 必读 | [托管线程中的取消](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/cancellation-in-managed-threads) | 开头协作取消模型、CancellationTokenSource与侦听取消；暂不读所有组合场景。 | 8分钟 |
 
-[书 A](https://www.oreilly.com.cn/index.php?func=book&isbn=978-7-115-55060-6)；[Channels](https://learn.microsoft.com/en-us/dotnet/core/extensions/channels)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 满时如何恢复写入？
+2. 正常完成和主动取消对剩余消息有什么不同？
 
 ## 开始前
 
@@ -37,8 +45,10 @@ dotnet run --project "Fundamentals.ChannelLab.csproj"
 
 ## 阅读要点
 
-- 书A第9章只读队列相关内容，第10章只读取消请求和响应；微软Channels文档读Bounded、Wait和完成写入。
-- 找出WriteAsync、ReadAllAsync、TryComplete与CancellationToken各自解决的问题。
+以下为按本日实验重新组织的学习笔记：
+
+- 有界Channel限制缓冲数量；满时等待使生产方感受到消费速度。正常完成先结束写入，再读完已接受的数据；异步写入等待不等于占着线程休眠。
+- 取消是合作协议：发出请求不等于所有工作已停止。停止接收、排空和取消处理要分别定义，并记录已接受、已处理及未完成数量。
 
 ## 120分钟执行顺序
 

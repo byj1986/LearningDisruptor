@@ -6,13 +6,12 @@
 
 本计划与当前 LearningDisruptor 仓库配套。WeekM/DayN 的 DayN 是当周第1～5天，正文同时标注全程第1～25天。25个每日目录均有README；可以继续前一天项目时不再新建。
 
-## 环境与书籍
+## 环境与阅读资料
 
 - 本机检测到.NET SDK 10.0.402，空项目目标为net10.0；global.json按已安装SDK固定版本。
 - Disruptor订单项目已声明Disruptor 6.0.1依赖。首次构建需要NuGet还原；以对应版本源码和API为准。
 - 所有Program.cs仅有空Main入口和提示注释；不包含任何练习实现、订单模型或处理器。
-- 书 A：[《C#并发编程经典实例》第2版](https://www.oreilly.com.cn/index.php?func=book&isbn=978-7-115-55060-6)，Stephen Cleary。
-- 书 B：[《CLR via C#》第4版](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)，Jeffrey Richter。重点读线程和同步；运行时细节结合当前.NET文档。
+- 核心阅读采用免费官方文章：[章节与文章对照、阅读范围及复习笔记](阅读资料.md)。各日README直接列出当天文章，无需先购买教材。
 - 选读：[《Pro .NET Memory Management》第2版](https://link.springer.com/book/10.1007/979-8-8688-0453-3)，用于性能和内存进阶。
 
 ## 贯穿项目
@@ -57,9 +56,20 @@
 
 **阅读材料：**
 
-书 A 第1章、第2章等待任务与异常处理；书 B 第26章。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [使用线程和线程处理](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/using-threads-and-threading) | 创建和启动新线程；Join等待线程结束；Sleep暂停当前线程。暂不读旧版Thread.Abort内容。 | 6分钟 |
+| 必读 | [使用async和await进行异步编程](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/) | 重点找Task.WhenAll、异步异常与await的示例；无需抄完整早餐程序。 | 9分钟 |
+| 查阅 | [基于任务的异步编程](https://learn.microsoft.com/zh-cn/dotnet/standard/parallel-programming/task-based-asynchronous-programming) | 开头任务抽象及显式创建运行任务，定位Task.Run。 | 5分钟 |
+| 选读 | [托管线程池](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/the-managed-thread-pool) | 线程池特征：线程复用、后台线程；先不调整线程池参数。 | 核心完成后 |
+| 选读 | [异步编程场景](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios) | 探索异步编程模型；查看基础概念；对照I/O型与CPU型工作。 | 核心完成后 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[书 A](https://www.oreilly.com.cn/index.php?func=book&isbn=978-7-115-55060-6)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 谁负责执行，谁表示完成？
+2. 等待全部任务和接收异常分别在哪里发生？
 
 #### 今日完成后应交付什么
 
@@ -67,8 +77,10 @@
 
 #### 阅读要点
 
-- 书A第1章只区分并发、并行、异步，第2章只读等待一组任务与异常传播；书B第26章看线程启动、Join、线程池。
-- 查清Thread、Task.Run、Task.WhenAll、Task.Delay各自返回什么；先不用研究编译器状态机。
+以下为按本日实验重新组织的学习笔记：
+
+- Thread用于管理线程；Task表示操作及其完成状态。Task.Run通常把工作交给默认线程池，await用于等待完成，不承诺新建独占线程。
+- 只记录谁启动工作、谁等待完成、异常由谁观察。先启动两个任务再等待，与做完第一个才启动第二个，是不同的执行安排。
 
 #### 120分钟执行顺序
 
@@ -148,9 +160,18 @@
 
 **阅读材料：**
 
-书 A 第12章阻塞锁；书 B 第29、30章相关部分；同步原语、Interlocked。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [lock语句](https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/statements/lock) | 语句语义与准则；区分专用Lock实例和object锁的Monitor路径。 | 8分钟 |
+| 必读 | [Interlocked类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.interlocked?view=net-10.0) | 定义及注解，查找Increment、CompareExchange的作用。 | 7分钟 |
+| 查阅 | [同步基元概述](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/overview-of-synchronization-primitives) | 只读对共享资源的访问同步，重点是同一同步实例保护同一资源。 | 5分钟 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[书 A](https://www.oreilly.com.cn/index.php?func=book&isbn=978-7-115-55060-6)；[同步原语](https://learn.microsoft.com/en-us/dotnet/standard/threading/overview-of-synchronization-primitives)；[Interlocked](https://learn.microsoft.com/en-us/dotnet/api/system.threading.interlocked)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 哪里可能发生丢失更新？
+2. 一个原子更新与一段临界区各自保护什么？
 
 #### 今日完成后应交付什么
 
@@ -158,8 +179,10 @@
 
 #### 阅读要点
 
-- 书A第12章12.1阻塞锁；书B第29章原子操作与第30章混合同步的相关小节。
-- 读Interlocked.Increment说明；把count++拆成读取、加一、写回三步。
+以下为按本日实验重新组织的学习笔记：
+
+- count++包含读取、计算、写回；单次读写的原子性不代表整个更新原子。Interlocked适合指定的原子更新，lock可以把多步不变量一起保护。
+- 本项目使用.NET 10，可学习专用System.Threading.Lock；若用object锁则理解Monitor路径。两种选择都要求参与线程共享同一个用于保护该资源的锁实例。
 
 #### 120分钟执行顺序
 
@@ -239,9 +262,19 @@
 
 **阅读材料：**
 
-书 B 第29章；Volatile、Interlocked、同步原语。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [Volatile类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.volatile?view=net-10.0) | 注解（Remarks）中的x/y发布示例，分别跟踪数据与标志的读写先后。 | 8分钟 |
+| 查阅 | [Interlocked类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.interlocked?view=net-10.0) | CompareExchange的比较、替换、返回旧值与失败重试。 | 5分钟 |
+| 查阅 | [ManualResetEventSlim类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.manualreseteventslim?view=net-10.0) | 示例及Set、Wait、超时；理解初始无信号状态。 | 7分钟 |
+| 选读 | [The C# Memory Model in Theory and Practice（英文进阶）](https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/december/csharp-the-csharp-memory-model-in-theory-and-practice) | Thread Communication Patterns相关部分；这是2012年的概念文章，运行时细节按当前API和实验核对。 | 核心完成后 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[同步原语](https://learn.microsoft.com/en-us/dotnet/standard/threading/overview-of-synchronization-primitives)；[Interlocked](https://learn.microsoft.com/en-us/dotnet/api/system.threading.interlocked)；[Volatile](https://learn.microsoft.com/en-us/dotnet/api/system.threading.volatile?view=net-10.0)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 发布标志前后各允许观察哪些数据？
+2. CAS更新失败和等待通知超时应该怎样识别？
 
 #### 今日完成后应交付什么
 
@@ -249,8 +282,10 @@ Volatile发布、信号通知、CAS递增三个练习及超时用例。
 
 #### 阅读要点
 
-- 书B第29章中Interlocked与内存顺序相关内容；微软Volatile文档的发布标志示例。
-- 识别CompareExchange的返回值；阅读ManualResetEventSlim.Wait超时与Set的作用。
+以下为按本日实验重新组织的学习笔记：
+
+- 原子性关心操作能否被拆开，可见性和排序关心另一线程能观察到什么。Volatile提供特定读写排序语义，不把++变成原子操作，也不无条件保证读取立刻看到最新值。
+- CAS重试与事件通知是两种不同工作：前者竞争一次条件更新，后者协调等待者。每轮用独立状态，避免把复位与复用协议混进单次发布实验。
 
 #### 120分钟执行顺序
 
@@ -330,9 +365,17 @@ Volatile发布、信号通知、CAS递增三个练习及超时用例。
 
 **阅读材料：**
 
-书 A 第9章队列、第10章取消；Channels 文档。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [System.Threading.Channels库](https://learn.microsoft.com/zh-cn/dotnet/core/extensions/channels) | 基本用法、边界限制策略；查找BoundedChannelFullMode.Wait、WriteAsync、ReadAllAsync、Complete/TryComplete。 | 12分钟 |
+| 必读 | [托管线程中的取消](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/cancellation-in-managed-threads) | 开头协作取消模型、CancellationTokenSource与侦听取消；暂不读所有组合场景。 | 8分钟 |
 
-[书 A](https://www.oreilly.com.cn/index.php?func=book&isbn=978-7-115-55060-6)；[Channels](https://learn.microsoft.com/en-us/dotnet/core/extensions/channels)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 满时如何恢复写入？
+2. 正常完成和主动取消对剩余消息有什么不同？
 
 #### 今日完成后应交付什么
 
@@ -340,8 +383,10 @@ Volatile发布、信号通知、CAS递增三个练习及超时用例。
 
 #### 阅读要点
 
-- 书A第9章只读队列相关内容，第10章只读取消请求和响应；微软Channels文档读Bounded、Wait和完成写入。
-- 找出WriteAsync、ReadAllAsync、TryComplete与CancellationToken各自解决的问题。
+以下为按本日实验重新组织的学习笔记：
+
+- 有界Channel限制缓冲数量；满时等待使生产方感受到消费速度。正常完成先结束写入，再读完已接受的数据；异步写入等待不等于占着线程休眠。
+- 取消是合作协议：发出请求不等于所有工作已停止。停止接收、排空和取消处理要分别定义，并记录已接受、已处理及未完成数量。
 
 #### 120分钟执行顺序
 
@@ -1428,9 +1473,17 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 **阅读材料：**
 
-源码中 RingBuffer、Sequence；书 B 第21章；内存管理书选读。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [垃圾回收的基本知识](https://learn.microsoft.com/zh-cn/dotnet/standard/garbage-collection/fundamentals) | 内存分配、托管堆与代；理解分配量和GC次数是不同指标。 | 8分钟 |
+| 必读 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 定位RingBuffer初始化、槽位访问及Sequence布局；只追踪本日指定符号。 | 12分钟 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)；[内存管理书](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 工厂调用数与消息数是什么关系？
+2. 创建、复用和回收分别发生在哪里？
 
 #### 今日完成后应交付什么
 
@@ -1438,8 +1491,10 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 #### 阅读要点
 
-- 以6.0.1对应提交阅读RingBuffer、Sequence定义及事件工厂调用；书B第21章选读对象分配。
-- 只追踪存储、对象创建、序号字段与布局，暂不试图一次看完全部算法。
+以下为按本日实验重新组织的学习笔记：
+
+- 事件工厂的创建计数只覆盖这些槽位对象，不能代表程序所有分配。日志、装箱、字符串、集合增长都应分别检查；没有GC不等于没有分配。
+- 预分配关注对象生命周期和分配压力；缓存行布局则需另读Sequence源码。GC文章用来理解托管内存，不用来证明缓存行或伪共享的具体效果。
 
 #### 120分钟执行顺序
 
@@ -1792,9 +1847,18 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 **阅读材料：**
 
-等待策略文档与对应版本实现；书 B 线程调度相关内容。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [线程调度](https://learn.microsoft.com/zh-cn/dotnet/standard/threading/scheduling-threads) | 文章开头的优先级、时间片与操作系统差异；无需运行大段优先级示例。 | 6分钟 |
+| 必读 | [Disruptor-net等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies) | 内置策略、设计说明及版本变化；接口以6.0.1源码为准。 | 10分钟 |
+| 查阅 | [SpinWait（英文API参考）](https://learn.microsoft.com/en-us/dotnet/api/system.threading.spinwait?view=net-10.0) | Remarks及NextSpinWillYield、SpinOnce；理解自旋与让出，不抄旧式普通bool示例作为发布协议。 | 4分钟 |
 
-[书 B](https://www.microsoftpressstore.com/store/clr-via-c-sharp-9780735667457)；[等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 哪段在等生产者，哪段在等依赖？
+2. 空闲CPU和负载下响应应该怎样同时记录？
 
 #### 今日完成后应交付什么
 
@@ -1802,8 +1866,10 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 #### 阅读要点
 
-- 等待策略文档，6.0.1的IWaitStrategy.WaitFor和三种策略实现。
-- 区分等待生产者新发布与等待前置消费者两条等待路径；不使用7.x的ISequenceWaiter解释6.0.1。
+以下为按本日实验重新组织的学习笔记：
+
+- 线程是否得到执行由调度与可用资源共同决定。自旋、让出和阻塞会带来不同CPU成本，不能由一轮实验推导固定延迟保证。
+- 分别观察等待新事件和等待前置阶段的路径。生产者满时策略仍需单独定义，不能从消费者等待策略的名字推断出来。
 
 #### 120分钟执行顺序
 
@@ -2067,9 +2133,19 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 **阅读材料：**
 
-内存管理书中的测量与分配章节；复习Stopwatch与GC统计。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 查阅 | [Stopwatch类](https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.stopwatch?view=net-10.0) | 注解与Elapsed、Frequency；明确墙钟计时边界。 | 6分钟 |
+| 查阅 | [GC.GetTotalAllocatedBytes（英文API参考）](https://learn.microsoft.com/en-us/dotnet/api/system.gc.gettotalallocatedbytes?view=net-10.0) | Definition与precise参数；进程累计托管分配，排除原生分配。 | 5分钟 |
+| 查阅 | [Process.TotalProcessorTime属性](https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.process.totalprocessortime?view=net-10.0) | 定义和属性值，区分进程CPU时间与墙钟时间。 | 5分钟 |
+| 查阅 | [GC.CollectionCount（英文API参考）](https://learn.microsoft.com/en-us/dotnet/api/system.gc.collectioncount?view=net-10.0) | 参数与返回值；按代读取进程启动以来累计次数。 | 4分钟 |
 
-[内存管理书](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 分子与分母是否覆盖相同事件区间？
+2. 初始化、预热、采样和排空分别计在哪里？
 
 #### 今日完成后应交付什么
 
@@ -2077,8 +2153,10 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 #### 阅读要点
 
-- Stopwatch、Process.TotalProcessorTime、GC.GetTotalAllocatedBytes及GC.CollectionCount的计量含义。
-- 选读内存管理书的Memory Measurements、Memory Allocation；先明确计时和统计范围。
+以下为按本日实验重新组织的学习笔记：
+
+- 累计分配取区间前后差，不是当前存活内存；跨线程实验不能只测当前线程。precise=true有额外成本，采样放在边界并保持两边口径一致。
+- Elapsed与TotalProcessorTime测量不同维度；各代CollectionCount也应取区间差。不要因为GC次数为零就把分配量写成零。
 
 #### 120分钟执行顺序
 
@@ -2158,9 +2236,17 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 **阅读材料：**
 
-内存管理书选读；复习等待策略与容量实验。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [Stopwatch类](https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.stopwatch?view=net-10.0) | Frequency与GetTimestamp；明确ticks换算，区分计时器频率与CPU主频。 | 10分钟 |
+| 复习 | [Disruptor-net等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies) | 结合已有策略实验，说明负载与排队如何进入本日测量边界。 | 10分钟 |
 
-[等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies)；[内存管理书](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 每个时间戳的单位与位置是什么？
+2. 欠发、排队和处理时间如何影响解释？
 
 #### 今日完成后应交付什么
 
@@ -2168,8 +2254,10 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 #### 阅读要点
 
-- Stopwatch.GetTimestamp与Frequency换算；P50/P99的明确计算方法。
-- 理解排队延迟、申请等待、实际发送速率，以及发送端阻塞导致的采样缺口。
+以下为按本日实验重新组织的学习笔记：
+
+- 时间戳差应按Stopwatch.Frequency换算。记录起点是计划发送、实际尝试还是成功入队；这些起点包含的等待不同。
+- 百分位按本日规定的最近秩法计算，并记录样本数。实际发送速率低于目标时同时报告发送滞后，不能只保留较好看的P99。
 
 #### 120分钟执行顺序
 
@@ -2366,4 +2454,4 @@ LMAX指南的核心概念；复习数组、序号、Stopwatch。
 
 - [Channels](https://learn.microsoft.com/en-us/dotnet/core/extensions/channels)
 
-- [内存管理书](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
+- [可选进阶书：Pro .NET Memory Management](https://link.springer.com/book/10.1007/979-8-8688-0453-3)
