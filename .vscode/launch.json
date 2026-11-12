@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "program",
+            "type": "pickString",
+            "description": "选择要调试的项目",
+            "options": [
+                "Week1/Day1/bin/Debug/net10.0/Fundamentals.ConcurrencyLab.dll",
+                "Week1/Day4/bin/Debug/net10.0/Fundamentals.ChannelLab.dll",
+                "Week1/Day5/bin/Debug/net10.0/Fundamentals.RingBufferLab.dll",
+                "Week2/Day1/bin/Debug/net10.0/Disruptor.OrderPipeline.dll",
+                "Week5/Day2/bin/Debug/net10.0/Comparison.ChannelPipeline.dll"
+            ]
+        }
+    ],
+    "configurations": [
+        {
+            "name": "调试",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/${input:program}",
+            "console": "integratedTerminal"
+        }
+    ]
+}
