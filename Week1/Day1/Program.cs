@@ -24,14 +24,24 @@ internal static partial class Program
 
         #region Part2 使用 async 和 await 进行异步编程
         // 重点找Task.WhenAll、异步异常与await的示例；无需抄完整早餐程序。
-        // MakeBreakfast();
-        // await MakeBreakfastAsyncV1();
-
-        // await MakeBreakfastAsyncV2();
-        // await MakeBreakfastAsyncV3();
-        // 当前启用 V4：观察异步异常在 await 处冒出并导致程序结束；如需对比正常耗时，改启用 V1/V2/V3 之一。
-        // await MakeBreakfastAsyncV4();
-        await MakeBreakfastAsyncV5();
+        // 计时统一放在调用方：切换下面任一版本时计时口径不变；finally 保证 V4 抛异常时也能停表并打出耗时。
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            // MakeBreakfast();
+            // await MakeBreakfastAsyncV1();
+            // await MakeBreakfastAsyncV2();
+            // await MakeBreakfastAsyncV3();
+            // await MakeBreakfastAsyncV4();
+            // await MakeBreakfastAsyncV5();
+            // await MakeBreakfastAsyncV6();
+            await MakeBreakfastAsyncV7();
+        }
+        finally
+        {
+            sw.Stop();
+            Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
+        }
         #endregion
 
         #region Part3 基于任务的异步编程

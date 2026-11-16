@@ -39,7 +39,6 @@ internal static partial class Program
     /// </summary>
     private static void MakeBreakfast()
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
         LogPhase("同步顺序");
 
         Coffee cup = PourCoffee();
@@ -59,8 +58,6 @@ internal static partial class Program
         Juice oj = PourOrangeJuice();
         Log("橙汁", "完成");
         Log("早餐", "完成");
-        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
     }
 
     /// <summary>
@@ -125,7 +122,6 @@ internal static partial class Program
     /// </summary>
     private static async Task MakeBreakfastAsyncV1()
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
         LogPhase("异步但逐步等待");
 
         Coffee cup = PourCoffee();
@@ -145,8 +141,6 @@ internal static partial class Program
         Juice oj = PourOrangeJuice();
         Log("橙汁", "完成");
         Log("早餐", "完成");
-        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
     }
 
     /// <summary>
@@ -155,8 +149,6 @@ internal static partial class Program
     /// </summary>
     private static async Task MakeBreakfastAsyncV2()
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-
         Coffee cup = PourCoffee();
         Log("咖啡", "完成");
         // 调用异步方法即启动任务（热任务）：先让三个任务并发跑起来，再按“先需要谁、先 await 谁”取结果。
@@ -175,9 +167,6 @@ internal static partial class Program
         Log("鸡蛋", "完成");
         HashBrown hashBrown = await hashBrownTask;
         Log("薯饼", "完成");
-
-        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
     }
 
 
@@ -188,8 +177,6 @@ internal static partial class Program
     /// </summary>
     private static async Task MakeBreakfastAsyncV3()
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-
         var eggsTask = FryEggsAsync(2);
         var hashBrownTask = FryHashBrownsAsync(3);
         var toastTask = MakeToastWithButterAndJamAsync(2);
@@ -206,8 +193,6 @@ internal static partial class Program
         Juice oj = PourOrangeJuice();
         Log("橙汁", "完成");
         Log("早餐", "完成");
-        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
     }
 
     /// <summary>
@@ -218,9 +203,6 @@ internal static partial class Program
     /// </summary>
     private static async Task MakeBreakfastAsyncV4()
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-
-
         Coffee cup = PourCoffee();
         Log("咖啡", "完成");
         Task<Egg> eggsTask = FryEggsAsync(2);
@@ -239,8 +221,6 @@ internal static partial class Program
         Log("鸡蛋", "完成");
         HashBrown hashBrown = await hashBrownTask;
         Log("薯饼", "完成");
-        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
     }
 
     /// <summary>
@@ -254,8 +234,6 @@ internal static partial class Program
     /// </summary>
     private static async Task MakeBreakfastAsyncV5()
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-
         Coffee cup = PourCoffee();
         Log("咖啡", "完成");
 
@@ -286,8 +264,78 @@ internal static partial class Program
         Juice oj = PourOrangeJuice();
         Log("橙汁", "完成");
         Log("早餐", "完成");
-        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
+    }
+
+    private static Task MakeBreakfastAsyncV6()
+    {
+        return FryEggsAsync(2)
+               .ContinueWith(eggsTask =>
+               {
+                   var eggs = eggsTask.Result;
+                   Log("鸡蛋", "完成");
+                   return FryHashBrownsAsync(3);
+               })
+               .Unwrap()
+               .ContinueWith(hashBrownTask =>
+               {
+                   var hashBrown = hashBrownTask.Result;
+                   Log("薯饼", "完成");
+                   return MakeToastWithButterAndJamAsync(2);
+               })
+               .Unwrap()
+               .ContinueWith(toastTask =>
+               {
+                   var toast = toastTask.Result;
+                   Log("面包", "涂黄油");
+                   return ApplyButterAsync(toast);
+               })
+               .Unwrap()
+               .ContinueWith(butteredToastTask =>
+               {
+                   var butteredToast = butteredToastTask.Result;
+                   Log("面包", "涂黄油");
+                   return ApplyJamAsync(butteredToast);
+               })
+               .Unwrap()
+               .ContinueWith(finalToastTask =>
+               {
+                   Log("早餐", "完成");
+               });
+    }
+
+    private static async Task MakeBreakfastAsyncV7()
+    {
+        var eggs = await FryEggsAsync(2);
+        Log("鸡蛋", "完成");
+
+        var bacon = await FryHashBrownsAsync(3);
+        Log("薯饼", "完成");
+
+        var toast = await StartToastingBreadAsync();
+        Log("面包", "完成");
+
+        var butteredToast = await ApplyButterAsync(toast);
+        Log("面包", "涂黄油");
+
+        var finalToast = await ApplyJamAsync(butteredToast);
+        Log("早餐", "完成");
+    }
+
+    private static async Task<Toast> StartToastingBreadAsync()
+    {
+        return await ToastBreadAsync(2);
+    }
+
+    private static async Task<Toast> ApplyButterAsync(Toast toast)
+    {
+        ApplyButter(toast);
+        return toast;
+    }
+
+    private static async Task<Toast> ApplyJamAsync(Toast toast)
+    {
+        ApplyJam(toast);
+        return toast;
     }
 
     /// <summary>
