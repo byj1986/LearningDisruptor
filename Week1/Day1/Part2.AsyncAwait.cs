@@ -244,6 +244,53 @@ internal static partial class Program
     }
 
     /// <summary>
+    /// 在 V2 的结构上改用 <see cref="Task.WhenAny"/> 实现“先完成谁、先吃谁”，演示非阻塞并发：
+    /// 三个任务先全部启动、后依次 await；await 的顺序只决定等待与记录的顺序，不影响并发，总耗时约 6 秒。
+    /// 虽然 await 的顺序不影响并发，但 await 的时机会影响“先完成谁、先吃谁”的顺序：
+    /// 先完成的任务会先被观察并从列表中移除，因此后续 await 会按新的顺序等待剩余任务。
+    /// 例如，如果鸡蛋先完成，则后续的涂抹、橙汁以及对薯饼任务的 await 都会等待该任务完成；
+    /// 如果薯饼先完成，则后续的涂抹、橙汁以及对鸡蛋任务的 await 都会等待该任务完成。
+    /// 这种非阻塞并发的实现方式，可以显著提高程序的响应性和吞吐量，尤其在处理大量并发任务时效果更明显。
+    /// </summary>
+    private static async Task MakeBreakfastAsyncV5()
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+
+        Coffee cup = PourCoffee();
+        Log("咖啡", "完成");
+
+        var eggsTask = FryEggsAsync(2);
+        var hashBrownTask = FryHashBrownsAsync(3);
+        var toastTask = MakeToastWithButterAndJamAsync(2);
+
+        var breakfastTasks = new List<Task> { eggsTask, hashBrownTask, toastTask };
+        while (breakfastTasks.Count > 0)
+        {
+            Task finishedTask = await Task.WhenAny(breakfastTasks);
+            if (finishedTask == eggsTask)
+            {
+                Log("鸡蛋", "完成");
+            }
+            else if (finishedTask == hashBrownTask)
+            {
+                Log("薯饼", "完成");
+            }
+            else if (finishedTask == toastTask)
+            {
+                Log("面包", "完成");
+            }
+            await finishedTask;
+            breakfastTasks.Remove(finishedTask);
+        }
+
+        Juice oj = PourOrangeJuice();
+        Log("橙汁", "完成");
+        Log("早餐", "完成");
+        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
+        sw.Stop();
+    }
+
+    /// <summary>
     /// 组合有依赖关系的面包步骤：必须先等面包烤好，才能依次涂黄油、涂果酱。
     /// 涂抹本身是瞬时同步操作，直接调用即可，无需再包装成异步方法。
     /// </summary>
