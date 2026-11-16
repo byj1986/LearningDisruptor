@@ -10,269 +10,285 @@
 // 6:倒一杯橙汁。
 internal static partial class Program
 {
-    /// <summary>
-    /// 薯饼类
-    /// </summary>
+    #region 类型
+
+    /// <summary>薯饼。</summary>
     internal class HashBrown { }
-    /// <summary>
-    /// 咖啡类
-    /// </summary>
+
+    /// <summary>咖啡。</summary>
     internal class Coffee { }
-    /// <summary>
-    /// 鸡蛋类
-    /// </summary>
+
+    /// <summary>鸡蛋。</summary>
     internal class Egg { }
-    /// <summary>
-    /// 橙汁类
-    /// </summary>
+
+    /// <summary>橙汁。</summary>
     internal class Juice { }
-    /// <summary>
-    /// 面包类
-    /// </summary>
+
+    /// <summary>面包。</summary>
     internal class Toast { }
+
+    #endregion
+
+    #region 同步
 
     /// <summary>
     /// 同步顺序执行早餐流程中的所有步骤。
-    /// 大约需要15秒(FryEggs 6000 + FryHashBrowns 6000 + ToastBread 3000)
+    /// 大约需要15秒(FryEggs 6000 + FryHashBrowns 6000 + ToastBread 3000)。
     /// </summary>
     private static void MakeBreakfast()
     {
         var sw = System.Diagnostics.Stopwatch.StartNew();
+        LogPhase("同步顺序");
+
         Coffee cup = PourCoffee();
-        Console.WriteLine("coffee is ready");
+        Log("咖啡", "完成");
 
         Egg eggs = FryEggs(2);
-        Console.WriteLine("eggs are ready");
+        Log("鸡蛋", "完成");
 
         HashBrown hashBrown = FryHashBrowns(3);
-        Console.WriteLine("hash browns are ready");
+        Log("薯饼", "完成");
 
         Toast toast = ToastBread(2);
         ApplyButter(toast);
         ApplyJam(toast);
-        Console.WriteLine("toast is ready");
+        Log("面包", "完成");
 
         Juice oj = PourOrangeJuice();
-        Console.WriteLine("oj is ready");
-        Console.WriteLine("Breakfast is ready!");
-        Console.WriteLine($"Sequential execution time: {sw.ElapsedMilliseconds}ms");
+        Log("橙汁", "完成");
+        Log("早餐", "完成");
+        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
         sw.Stop();
-    }
-
-    /// <summary>
-    /// 虽然使用了async，但是所有的任务都需要await再继续
-    /// 因此不会并发执行，而是顺序执行
-    /// 最终仍然需要大约15秒
-    /// </summary>
-    private async static Task MakeBreakfastAsyncV1()
-    {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-
-        Coffee cup = PourCoffee();
-        Console.WriteLine("coffee is ready");
-
-        Egg eggs = await FryEggsAsync(2);
-        Console.WriteLine("eggs are ready");
-
-        HashBrown hashBrown = await FryHashBrownsAsync(3);
-        Console.WriteLine("hash browns are ready");
-
-        Toast toast = await ToastBreadAsync(2);
-        ApplyButter(toast);
-        ApplyJam(toast);
-        Console.WriteLine("toast is ready");
-
-        Juice oj = PourOrangeJuice();
-        Console.WriteLine("oj is ready");
-        Console.WriteLine("Breakfast is ready!");
-
-
-        Console.WriteLine($"Async execution time: {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
-    }
-
-    /// <summary>
-    /// 先启动三个任务再依次await，三个步骤并发执行。
-    /// 大约需要6秒Max(FryEggs 6000, FryHashBrowns 6000, ToastBread 3000)
-    /// </summary>
-    /// <returns></returns>
-    private async static Task MakeBreakfastAsyncV2()
-    {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-
-        Coffee cup = PourCoffee();
-        Console.WriteLine("coffee is ready");
-        // Task<Egg> eggsTask = FryEggsAsync(2);
-        // Task<HashBrown> hashBrownTask = FryHashBrownsAsync(3);
-        // Task<Toast> toastTask = ToastBreadAsync(2);
-
-
-        var eggsTask = FryEggsAsync(2);
-        var hashBrownTask = FryHashBrownsAsync(3);
-        var toastTask = ToastBreadAsync(2);
-
-        var eggs = await eggsTask;
-        Console.WriteLine("eggs are ready");
-
-        var hashBrown = await hashBrownTask;
-        Console.WriteLine("hash browns are ready");
-
-        var toast = await toastTask;
-        Console.WriteLine("toast is ready");
-        // await Task.WhenAll(eggsTask, hashBrownTask, toastTask);
-
-        Juice oj = PourOrangeJuice();
-        Console.WriteLine("oj is ready");
-        Console.WriteLine("Breakfast is ready!");
-        Console.WriteLine($"Async execution time: {sw.ElapsedMilliseconds}ms");
-        sw.Stop();
-    }
-    /// <summary>
-    /// 倒一杯橙汁。
-    /// 瞬时完成
-    /// </summary>
-    /// <returns></returns>
-    private static Juice PourOrangeJuice()
-    {
-        Console.WriteLine("Pouring orange juice");
-        return new Juice();
-    }
-
-    /// <summary>
-    /// 将果酱涂抹在烤面包片上。
-    /// 瞬时完成
-    /// </summary>
-    /// <param name="toast"></param>
-    private static void ApplyJam(Toast toast) =>
-        Console.WriteLine("Putting jam on the toast");
-
-    /// <summary>
-    /// 将黄油涂抹在烤面包片上。
-    /// 瞬时完成
-    /// </summary>
-    /// <param name="toast"></param>
-    private static void ApplyButter(Toast toast) =>
-        Console.WriteLine("Putting butter on the toast");
-
-    private static async Task<Toast> ToastBreadAsync(int slices)
-    {
-        for (int slice = 0; slice < slices; slice++)
-        {
-            Console.WriteLine("Putting a slice of bread in the toaster");
-        }
-        Console.WriteLine("Start toasting...");
-        await Task.Delay(3000);
-        Console.WriteLine("Remove toast from toaster");
-
-        return new Toast();
-    }
-
-    /// <summary>
-    /// 烤两块面包。
-    /// 面包片放入烤面包机，瞬时完成
-    /// 烤面包片需要3000ms
-    /// 面包片从烤面包机中取出，瞬时完成
-    /// 总共需要3000ms
-    /// </summary>
-    /// <param name="slices">面包片数量</param>
-    /// <returns></returns>
-    private static Toast ToastBread(int slices)
-    {
-        for (int slice = 0; slice < slices; slice++)
-        {
-            Console.WriteLine($"Putting a slice of bread in the toaster {slice + 1} of {slices}");
-        }
-        Console.WriteLine("Start toasting...");
-        Task.Delay(3000).Wait();
-        Console.WriteLine("Remove toast from toaster");
-
-        return new Toast();
-    }
-
-    private static async Task<HashBrown> FryHashBrownsAsync(int patties)
-    {
-        Console.WriteLine($"putting {patties} hash brown patties in the pan");
-        Console.WriteLine("cooking first side of hash browns...");
-        await Task.Delay(3000);
-        for (int patty = 0; patty < patties; patty++)
-        {
-            Console.WriteLine("flipping a hash brown patty");
-        }
-        Console.WriteLine("cooking the second side of hash browns...");
-        await Task.Delay(3000);
-        Console.WriteLine("Put hash browns on plate");
-
-        return new HashBrown();
-    }
-
-    /// <summary>
-    /// 烹制三个薯饼。
-    /// 放入薯饼，瞬时完成
-    /// 煎薯饼第一面需要3000ms
-    /// 煎薯饼第二面需要3000ms
-    /// 放入餐盘，瞬时完成
-    /// 总共需要6000ms
-    /// </summary>
-    /// <param name="patties">薯饼数量</param>
-    /// <returns></returns>
-    private static HashBrown FryHashBrowns(int patties)
-    {
-        Console.WriteLine($"putting {patties} hash brown patties in the pan");
-        Console.WriteLine("cooking first side of hash browns...");
-        Task.Delay(3000).Wait();
-        for (int patty = 0; patty < patties; patty++)
-        {
-            Console.WriteLine($"flipping a hash brown patty {patty + 1} of {patties}");
-        }
-        Console.WriteLine("cooking the second side of hash browns...");
-        Task.Delay(3000).Wait();
-        Console.WriteLine("Put hash browns on plate");
-
-        return new HashBrown();
-    }
-
-    private static async Task<Egg> FryEggsAsync(int count)
-    {
-        Console.WriteLine("Warming the egg pan...");
-        await Task.Delay(3000);
-        Console.WriteLine($"cracking {count} eggs");
-        Console.WriteLine("cooking the eggs ...");
-        await Task.Delay(3000);
-        Console.WriteLine("Put eggs on plate");
-
-        return new Egg();
     }
 
     /// <summary>
     /// 加热锅，然后炒两个鸡蛋。
-    /// 热锅需要3000ms
-    /// 打蛋瞬时完成
-    /// 炒鸡蛋需要3000ms
-    /// 放入餐盘，瞬时完成
-    /// 总共需要6000ms
+    /// 热锅需要3000ms，打蛋瞬时完成，炒鸡蛋需要3000ms，放入餐盘瞬时完成。总共需要6000ms。
     /// </summary>
-    /// <param name="count">鸡蛋数量</param>
-    /// <returns></returns>
     private static Egg FryEggs(int count)
     {
-        Console.WriteLine("Warming the egg pan...");
+        Log("鸡蛋", "热锅");
         Task.Delay(3000).Wait();
-        Console.WriteLine($"cracking {count} eggs");
-        Console.WriteLine("cooking the eggs ...");
+        Log("鸡蛋", $"打入 {count} 个");
+        Log("鸡蛋", "煎制");
         Task.Delay(3000).Wait();
-        Console.WriteLine("Put eggs on plate");
+        Log("鸡蛋", "装盘");
 
         return new Egg();
     }
 
     /// <summary>
-    /// 倒一杯咖啡。
-    /// 瞬间完成
+    /// 烹制三个薯饼。
+    /// 放入薯饼瞬时完成，两面各煎3000ms，放入餐盘瞬时完成。总共需要6000ms。
     /// </summary>
-    /// <returns></returns>
+    private static HashBrown FryHashBrowns(int patties)
+    {
+        Log("薯饼", $"放入 {patties} 个，煎第一面");
+        Task.Delay(3000).Wait();
+        for (int patty = 0; patty < patties; patty++)
+        {
+            Log("薯饼", $"翻面 {patty + 1}/{patties}");
+        }
+        Log("薯饼", "煎第二面");
+        Task.Delay(3000).Wait();
+        Log("薯饼", "装盘");
+
+        return new HashBrown();
+    }
+
+    /// <summary>
+    /// 烤两块面包。
+    /// 面包片放入烤面包机瞬时完成，烘烤需要3000ms，取出瞬时完成。总共需要3000ms。
+    /// </summary>
+    private static Toast ToastBread(int slices)
+    {
+        for (int slice = 0; slice < slices; slice++)
+        {
+            Log("面包", $"放入第 {slice + 1}/{slices} 片");
+        }
+        Log("面包", "开始烘烤");
+        Task.Delay(3000).Wait();
+        Log("面包", "取出");
+
+        return new Toast();
+    }
+
+    #endregion
+
+    #region 异步
+
+    /// <summary>
+    /// 虽然使用了 async，但是每个任务都 await 后再继续，因此不会并发执行。
+    /// 最终仍然需要大约15秒。
+    /// </summary>
+    private static async Task MakeBreakfastAsyncV1()
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        LogPhase("异步但逐步等待");
+
+        Coffee cup = PourCoffee();
+        Log("咖啡", "完成");
+
+        Egg eggs = await FryEggsAsync(2);
+        Log("鸡蛋", "完成");
+
+        HashBrown hashBrown = await FryHashBrownsAsync(3);
+        Log("薯饼", "完成");
+
+        Toast toast = await ToastBreadAsync(2);
+        ApplyButter(toast);
+        ApplyJam(toast);
+        Log("面包", "完成");
+
+        Juice oj = PourOrangeJuice();
+        Log("橙汁", "完成");
+        Log("早餐", "完成");
+        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
+        sw.Stop();
+    }
+
+    /// <summary>
+    /// 先启动三个任务再依次 await，三个步骤并发执行。
+    /// 大约需要6秒，即 Max(FryEggs 6000, FryHashBrowns 6000, ToastBread 3000)。
+    /// </summary>
+    private static async Task MakeBreakfastAsyncV2()
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        LogPhase("异步并发（先启动，再按需要等待）");
+
+        Coffee cup = PourCoffee();
+        Log("咖啡", "完成");
+        Task<Egg> eggsTask = FryEggsAsync(2);
+        Task<HashBrown> hashBrownTask = FryHashBrownsAsync(3);
+        Task<Toast> toastTask = ToastBreadAsync(2);
+
+        Toast toast = await toastTask;
+        ApplyButter(toast);
+        ApplyJam(toast);
+        Log("面包", "完成");
+        Juice oj = PourOrangeJuice();
+        Log("橙汁", "完成");
+
+        Egg eggs = await eggsTask;
+        Log("鸡蛋", "完成");
+        HashBrown hashBrown = await hashBrownTask;
+        Log("薯饼", "完成");
+
+        // Task<Egg> eggsTask = FryEggsAsync(2);
+        // Task<HashBrown> hashBrownTask = FryHashBrownsAsync(3);
+        // Task<Toast> toastTask = ToastBreadAsync(2);
+
+        // var eggsTask = FryEggsAsync(2);
+        // var hashBrownTask = FryHashBrownsAsync(3);
+        // var toastTask = ToastBreadAsync(2);
+
+        // var eggs = await eggsTask;
+        // Console.WriteLine("eggs are ready");
+
+        // var hashBrown = await hashBrownTask;
+        // Console.WriteLine("hash browns are ready");
+
+        // var toast = await toastTask;
+        // Console.WriteLine("toast is ready");
+        // await Task.WhenAll(eggsTask, hashBrownTask, toastTask);
+        // Juice oj = PourOrangeJuice();
+        // Console.WriteLine("oj is ready");
+        // Console.WriteLine("Breakfast is ready!");
+        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
+        sw.Stop();
+    }
+
+    /// <summary>
+    /// 加热锅，然后炒两个鸡蛋。热锅 3000ms，煎制 3000ms。
+    /// </summary>
+    private static async Task<Egg> FryEggsAsync(int count)
+    {
+        Log("鸡蛋", "热锅");
+        await Task.Delay(3000);
+        Log("鸡蛋", $"打入 {count} 个");
+        Log("鸡蛋", "煎制");
+        await Task.Delay(3000);
+        Log("鸡蛋", "装盘");
+
+        return new Egg();
+    }
+
+    /// <summary>
+    /// 烹制三个薯饼。两面各煎 3000ms。
+    /// </summary>
+    private static async Task<HashBrown> FryHashBrownsAsync(int patties)
+    {
+        Log("薯饼", $"放入 {patties} 个，煎第一面");
+        await Task.Delay(3000);
+        for (int patty = 0; patty < patties; patty++)
+        {
+            Log("薯饼", $"翻面 {patty + 1}/{patties}");
+        }
+        Log("薯饼", "煎第二面");
+        await Task.Delay(3000);
+        Log("薯饼", "装盘");
+
+        return new HashBrown();
+    }
+
+    /// <summary>
+    /// 烤两块面包。烘烤 3000ms。
+    /// </summary>
+    private static async Task<Toast> ToastBreadAsync(int slices)
+    {
+        for (int slice = 0; slice < slices; slice++)
+        {
+            Log("面包", $"放入第 {slice + 1}/{slices} 片");
+        }
+        Log("面包", "开始烘烤");
+        await Task.Delay(3000);
+        Log("面包", "取出");
+
+        return new Toast();
+    }
+
+    #endregion
+
+    #region 共用步骤
+
+    /// <summary>
+    /// 倒一杯咖啡。瞬时完成。
+    /// </summary>
     private static Coffee PourCoffee()
     {
-        Console.WriteLine("Pouring coffee");
+        Log("咖啡", "倒出");
         return new Coffee();
     }
+
+    /// <summary>
+    /// 将黄油涂抹在烤面包片上。瞬时完成。
+    /// </summary>
+    private static void ApplyButter(Toast toast) =>
+        Log("面包", "涂黄油");
+
+    /// <summary>
+    /// 将果酱涂抹在烤面包片上。瞬时完成。
+    /// </summary>
+    private static void ApplyJam(Toast toast) =>
+        Log("面包", "涂果酱");
+
+    /// <summary>
+    /// 倒一杯橙汁。瞬时完成。
+    /// </summary>
+    private static Juice PourOrangeJuice()
+    {
+        Log("橙汁", "倒出");
+        return new Juice();
+    }
+
+    private static void LogPhase(string title)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"== {title} ==");
+    }
+
+    private static void Log(string step, string message) =>
+        Console.WriteLine($"[{step}] {message}");
+
+    #endregion
 }
