@@ -1,7 +1,9 @@
 // 阅读：使用 async 和 await 进行异步编程
 // https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/
 //
-// 早餐流程（MakeBreakfast 系列三个方法共用）：
+// 早餐流程（MakeBreakfast 系列方法共用）：
+// V1：启动后立即逐个 await，仍近似顺序执行；V2：先全部启动再按需 await，实现并发。
+// V3：把“烤面包+涂黄油+涂果酱”组合成一个异步操作；V4：改用会抛异常的烤面包方法，观察异步异常。
 // 1:倒一杯咖啡。
 // 2:加热锅，然后炒两个鸡蛋。
 // 3:烹制三个薯饼。
@@ -154,10 +156,10 @@ internal static partial class Program
     private static async Task MakeBreakfastAsyncV2()
     {
         var sw = System.Diagnostics.Stopwatch.StartNew();
-        LogPhase("异步并发（先启动，再按需要等待）");
 
         Coffee cup = PourCoffee();
         Log("咖啡", "完成");
+        // 调用异步方法即启动任务（热任务）：先让三个任务并发跑起来，再按“先需要谁、先 await 谁”取结果。
         Task<Egg> eggsTask = FryEggsAsync(2);
         Task<HashBrown> hashBrownTask = FryHashBrownsAsync(3);
         Task<Toast> toastTask = ToastBreadAsync(2);
@@ -174,28 +176,83 @@ internal static partial class Program
         HashBrown hashBrown = await hashBrownTask;
         Log("薯饼", "完成");
 
-        // Task<Egg> eggsTask = FryEggsAsync(2);
-        // Task<HashBrown> hashBrownTask = FryHashBrownsAsync(3);
-        // Task<Toast> toastTask = ToastBreadAsync(2);
-
-        // var eggsTask = FryEggsAsync(2);
-        // var hashBrownTask = FryHashBrownsAsync(3);
-        // var toastTask = ToastBreadAsync(2);
-
-        // var eggs = await eggsTask;
-        // Console.WriteLine("eggs are ready");
-
-        // var hashBrown = await hashBrownTask;
-        // Console.WriteLine("hash browns are ready");
-
-        // var toast = await toastTask;
-        // Console.WriteLine("toast is ready");
-        // await Task.WhenAll(eggsTask, hashBrownTask, toastTask);
-        // Juice oj = PourOrangeJuice();
-        // Console.WriteLine("oj is ready");
-        // Console.WriteLine("Breakfast is ready!");
         Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
         sw.Stop();
+    }
+
+
+    /// <summary>
+    /// 在 V2 并发启动的基础上，把有先后依赖的“烤面包 → 涂黄油 → 涂果酱”组合成
+    /// <see cref="MakeToastWithButterAndJamAsync"/> 一个异步操作，再与鸡蛋、薯饼并发。
+    /// 三个任务先全部启动、后依次 await；await 的顺序只决定等待与记录的顺序，不影响并发，总耗时约 6 秒。
+    /// </summary>
+    private static async Task MakeBreakfastAsyncV3()
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+
+        var eggsTask = FryEggsAsync(2);
+        var hashBrownTask = FryHashBrownsAsync(3);
+        var toastTask = MakeToastWithButterAndJamAsync(2);
+
+        var eggs = await eggsTask;
+        Log("鸡蛋", "完成");
+
+        var hashBrown = await hashBrownTask;
+        Log("薯饼", "完成");
+
+        var toast = await toastTask;
+        Log("面包", "完成");
+
+        Juice oj = PourOrangeJuice();
+        Log("橙汁", "完成");
+        Log("早餐", "完成");
+        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
+        sw.Stop();
+    }
+
+    /// <summary>
+    /// 在 V2 的结构上改用会故障的 <see cref="ToastBreadAsyncV2"/>，演示异步异常的传播时机：
+    /// 调用该方法只是启动任务并拿到一个将要故障的 Task，异常不会在调用处同步抛出；
+    /// 直到 <c>await toastTask</c> 时才重新抛出，并经本方法与 Main 向上传播（当前未捕获，程序会以未处理异常结束）。
+    /// 因此后面的涂抹、橙汁以及对鸡蛋/薯饼任务的 await 都不会执行，已启动的两个任务其结果也不再被观察。
+    /// </summary>
+    private static async Task MakeBreakfastAsyncV4()
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+
+
+        Coffee cup = PourCoffee();
+        Log("咖啡", "完成");
+        Task<Egg> eggsTask = FryEggsAsync(2);
+        Task<HashBrown> hashBrownTask = FryHashBrownsAsync(3);
+        Task<Toast> toastTask = ToastBreadAsyncV2(2);
+
+        // 此处 await 会重新抛出 toastTask 中保存的异常，本方法后续代码不再执行。
+        Toast toast = await toastTask;
+        ApplyButter(toast);
+        ApplyJam(toast);
+        Log("面包", "完成");
+        Juice oj = PourOrangeJuice();
+        Log("橙汁", "完成");
+
+        Egg eggs = await eggsTask;
+        Log("鸡蛋", "完成");
+        HashBrown hashBrown = await hashBrownTask;
+        Log("薯饼", "完成");
+        Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
+        sw.Stop();
+    }
+
+    /// <summary>
+    /// 组合有依赖关系的面包步骤：必须先等面包烤好，才能依次涂黄油、涂果酱。
+    /// 涂抹本身是瞬时同步操作，直接调用即可，无需再包装成异步方法。
+    /// </summary>
+    private static async Task<Toast> MakeToastWithButterAndJamAsync(int number)
+    {
+        var toast = await ToastBreadAsync(number);
+        ApplyButter(toast);
+        ApplyJam(toast);
+        return toast;
     }
 
     /// <summary>
@@ -230,6 +287,29 @@ internal static partial class Program
 
         return new HashBrown();
     }
+
+    /// <summary>
+    /// 故意写错的烤面包版本，用于演示异步异常：烘烤 2 秒后抛出
+    /// <see cref="System.InvalidOperationException"/>，模拟烤面包机起火。
+    /// 异常会被存入返回的 Task，直到调用方 await 时才重新抛出；throw 之后的代码不可达、不会执行。
+    /// </summary>
+    private static async Task<Toast> ToastBreadAsyncV2(int slices)
+    {
+        for (int slice = 0; slice < slices; slice++)
+        {
+            Log("面包", $"放入第 {slice + 1}/{slices} 片");
+        }
+        Log("面包", "开始烘烤");
+        await Task.Delay(2000);
+        Log("面包", "烤糊了！");
+        // 模拟故障点：异常在此被捕获进 Task，方法随即以故障状态结束，以下语句不可达。
+        throw new InvalidOperationException("The toaster is on fire");
+        await Task.Delay(1000);
+        Log("面包", "取出");
+
+        return new Toast();
+    }
+
 
     /// <summary>
     /// 烤两块面包。烘烤 3000ms。
@@ -281,12 +361,14 @@ internal static partial class Program
         return new Juice();
     }
 
+    /// <summary>打印阶段标题，便于在控制台对比不同版本的执行顺序。</summary>
     private static void LogPhase(string title)
     {
         Console.WriteLine();
         Console.WriteLine($"== {title} ==");
     }
 
+    /// <summary>统一日志格式“[步骤] 消息”，只用于观察顺序与相对耗时，不改变早餐流程本身。</summary>
     private static void Log(string step, string message) =>
         Console.WriteLine($"[{step}] {message}");
 

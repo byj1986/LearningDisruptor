@@ -27,7 +27,10 @@ internal static partial class Program
         // MakeBreakfast();
         // await MakeBreakfastAsyncV1();
 
-        await MakeBreakfastAsyncV2();
+        // await MakeBreakfastAsyncV2();
+        // await MakeBreakfastAsyncV3();
+        // 当前启用 V4：观察异步异常在 await 处冒出并导致程序结束；如需对比正常耗时，改启用 V1/V2/V3 之一。
+        await MakeBreakfastAsyncV4();
         #endregion
 
         #region Part3 基于任务的异步编程
