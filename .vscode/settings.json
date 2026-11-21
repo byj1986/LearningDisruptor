@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "LearningDisruptor.sln"
+    "dotnet.defaultSolution": "LearningDisruptor.sln",
+    "dotnet.server.useOmnisharp": false
 }
