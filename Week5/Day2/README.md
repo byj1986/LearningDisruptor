@@ -18,13 +18,21 @@ dotnet run --project "Comparison.ChannelPipeline.csproj"
 
 ## 阅读
 
-复习第4天项目与 Channels 文档。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [System.Threading.Channels库](https://learn.microsoft.com/zh-cn/dotnet/core/extensions/channels) | 复习 `BoundedChannelOptions`（`SingleReader`/`SingleWriter`/`FullMode.Wait`）与完成/排空路径。 | 12分钟 |
+| 复习 | [第4天实验记录](../../Week1/Day4/README.md) | 对照有界 Channel 正常完成、满时等待与取消统计口径。 | 8分钟 |
 
-[Channels](https://learn.microsoft.com/en-us/dotnet/core/extensions/channels)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 如何保证 Channel 与 Disruptor 比较的是同等容量、同等业务逻辑与同等单生产单消费语义？
+2. Channel 使用引用类型（`class`）与值类型（`readonly record struct`）载荷在内存分配上有何本质差异？
 
 ## 开始前
 
-先核对全程第21天的核心验收；记录未通过项。本日复用项目位置见上方链接。
+先核对全程第21天的核心验收；记录未通过项。本日使用上方新建项目。
 
 ## 本日核心概念
 
@@ -39,6 +47,7 @@ dotnet run --project "Comparison.ChannelPipeline.csproj"
 
 - Channels的有界配置、SingleReader/SingleWriter、FullMode.Wait与完成方式。
 - 先比较同等单生产单消费，不拿广播流水线与竞争消费混比。
+- **载荷类型公平性**：若 Channel 传输可变/不可变 `class`，每条消息逐次 `new` 会产生大量堆分配；若使用 `readonly record struct`，Channel 同样可以做到极低或零逐条堆分配。推荐主对照组采用 `readonly record struct` 载荷（或把 `class` 与 `struct` 分别作为对照组记录），避免把逐条 `new class` 的分配成本错归因于 Channel 队列本身。
 
 ## 120分钟执行顺序
 
@@ -58,7 +67,7 @@ dotnet run --project "Comparison.ChannelPipeline.csproj"
 
 ### 50～75分钟：扩展实现
 
-- [ ] 扩至100000条，核对数量、编号和、金额及费用；另跑无效输入小样本，确认两边业务规则一致。
+- [ ] 扩至100000条正常订单（每条金额100分、费用10分），核对数量、编号和、金额及费用；另跑无效输入小样本（沿用第12天与第21天统一的“编号能被10整除则无效”规则，如0～19应为有效18、无效2、费用180分），确认两边业务规则严格一致。
 
 ### 75～105分钟：边界与对照
 

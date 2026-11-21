@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-事件处理器的异常与生命周期；对应版本关闭API。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [事件处理器（Event Handlers）](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers) | 异常处理（`IExceptionHandler<T>`）与生命周期回调（`OnStart`/`OnShutdown`）。 | 12分钟 |
+| 查阅 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 核对 6.0.1 的 `SetDefaultExceptionHandler`、`Shutdown(TimeSpan)`、`Halt` 及 `IEventProcessor.Start` 签名。 | 8分钟 |
 
-[事件处理器](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 异常处理器返回与重新抛出异常，对处理线程生命周期分别意味着什么？
+2. `Shutdown(TimeSpan)` 与 `Halt()` 的退出语义有何差异？
 
 ## 开始前
 
@@ -96,7 +104,7 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 选做拓展
 
-选做：研究Start返回的处理任务及OnShutdown，区分请求停止与最终线程退出的观察点。
+选做：区分 `Disruptor<T>.Start()`（在 6.0.1 中返回 `RingBuffer<T>`）与底层 `IEventProcessor.Start(...)`（返回运行 `Task`），结合 `OnShutdown` 回调区分“请求停止”与“处理线程最终退出”的观察点。
 
 核心验收未通过时先补练，不要求当天完成选做。
 

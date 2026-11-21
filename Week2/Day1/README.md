@@ -18,13 +18,21 @@ dotnet run --project "Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-入门、源码 README。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [入门（Getting Started）](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started) | 按 Events、Event Handlers、Disruptor、Publishing 顺序读最小跑通流程。 | 12分钟 |
+| 查阅 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 核对 6.0.1 的 `Disruptor<T>` 构造签名、默认 `ProducerType`、`Start()` 与 `Shutdown(TimeSpan)`。 | 8分钟 |
 
-[入门](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started)；[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 事件对象在哪里创建，回调在哪个线程执行？
+2. `Disruptor<T>` 默认构造函数使用的是单生产者还是多生产者？
 
 ## 开始前
 
-先核对全程第5天的核心验收；记录未通过项。本日复用项目位置见上方链接。 本周开始前用10分钟复述上一周的完成条件、数据所有权和错误结束流程。
+先核对全程第5天的核心验收；记录未通过项。本日使用上方新建项目。本周开始前用10分钟复述上一周的完成条件、数据所有权和错误结束流程。
 
 ## 本日核心概念
 
@@ -39,6 +47,7 @@ dotnet run --project "Disruptor.OrderPipeline.csproj"
 
 - 官方Getting Started按Events、Event Handlers、Disruptor、Publishing顺序读。
 - 定位Disruptor<T>构造、HandleEventsWith、Start及Shutdown(TimeSpan)；使用6.0.1签名。
+- **6.0.1 关键注意**：`Disruptor<T>` 的双参/三参构造默认使用 `ProducerType.Multi`（`SequencerFactory.DefaultProducerType`）与 `BlockingWaitStrategy`。第6～13天单生产者实验请使用 5 参构造显式传入 `ProducerType.Single`（如 `new Disruptor<OrderEvent>(..., TaskScheduler.Default, ProducerType.Single, new BlockingWaitStrategy())`），避免误用多生产者协调器。
 
 ## 120分钟执行顺序
 
@@ -79,6 +88,7 @@ dotnet run --project "Disruptor.OrderPipeline.csproj"
 ## 卡住时先检查
 
 - 累计编号和用long，避免100000条时int溢出。
+- 确认构造 `Disruptor<T>` 时已显式指定 `ProducerType.Single`；双参/三参构造默认是 `ProducerType.Multi`。
 - Shutdown前先停止发布；它的返回也不等于所有处理线程已最终终止，线程生命周期观察要另行确认。
 
 ## 验收清单

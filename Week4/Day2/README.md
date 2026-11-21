@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-源码中的单生产者协调器；LMAX指南。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 精读 `SingleProducerSequencer` 的 `Next`、`TryNext`、`Publish` 与回绕检查（wrap point）。 | 14分钟 |
+| 查阅 | [LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html) | 核对单生产者序号推进与 gating sequences 概念。 | 6分钟 |
 
-[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)；[LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 单生产者为什么可以缓存最小消费者序号，何时必须重新扫描 gating sequences？
+2. 容量为 8、末端消费进度为 3 时，申请序号 12 为什么必须等待或失败？
 
 ## 开始前
 
@@ -78,6 +86,7 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 卡住时先检查
 
+- 核对复用的第 10 天暂停实验确实显式配置了 `ProducerType.Single`（6.0.1 默认构造为 `Multi`）。
 - 统一“最后已完成序号”和“下一待处理序号”的口径，避免差一错误。
 - 推演多消费者时使用约束槽位复用的最慢末端进度，不随意选最快处理器。
 

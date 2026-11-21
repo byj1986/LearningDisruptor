@@ -18,9 +18,17 @@ dotnet run --project "../Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-发布与背压。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [发布与背压（Publication Options）](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options) | 只读 `Next`/`Publish` 与发布作用域（`PublishEvent`）两节。 | 14分钟 |
+| 查阅 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 核对 6.0.1 中 `UnpublishedEventScope.Dispose` 及各发布方法归属（`Disruptor<T>` vs `RingBuffer<T>`）。 | 6分钟 |
 
-[发布与背压](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 取得序号后填充抛错，为什么仍必须执行发布协议？
+2. 哪些发布方法在 `Disruptor<T>` 上，哪些只在 `RingBuffer<T>` 上？
 
 ## 开始前
 
@@ -39,6 +47,7 @@ dotnet run --project "../Day1/Disruptor.OrderPipeline.csproj"
 
 - Publication Options只读Next/Publish及发布作用域。
 - 根据6.0.1理解作用域Dispose的发布行为；先区分输入拒绝与已取得槽位后的失败。
+- **6.0.1 API 归属**：`PublishEvent()` / `PublishEvents(int)` 在 `Disruptor<T>` 和 `RingBuffer<T>` 上均有提供；而底层 `Next()` / `Publish()` 及非阻塞的 `TryNext()` / `TryPublishEvent()` / `TryPublishEvents(int)` **仅在 `RingBuffer<T>` 上提供**。
 
 ## 120分钟执行顺序
 

@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-事件处理器；LMAX指南的 Multicast Events。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [事件处理器（Event Handlers）](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers) | 多个处理器注册与各自独立处理循环。 | 10分钟 |
+| 必读 | [LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html) | Multicast Events 节，理解广播语义与共享读取。 | 10分钟 |
 
-[事件处理器](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers)；[LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 同一条事件为什么会被两个普通处理器各自完整处理一次？
+2. 两个处理器并行运行，谁负责约束槽位复用下界？
 
 ## 开始前
 
@@ -83,7 +91,7 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 验收清单
 
-- [ ] 两个处理器都收到10万条，而不是各5万条。
+- [ ] 两个处理器都收到10000条，而不是各5000条。
 - [ ] 能说明并行写同一字段为什么需要额外协调。
 - [ ] 三组场景均有实际记录；理论预期与实测结果分开填写。
 - [ ] 等待、失败与停止路径有明确结束方式；能说明本实验没有验证的范围。

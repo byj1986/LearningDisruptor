@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-事件处理器的依赖配置；LMAX指南消费者依赖图。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [事件处理器（Event Handlers）](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers) | 依赖配置与 `Then` 串行链式注册。 | 10分钟 |
+| 必读 | [LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html) | Consumer Dependency Graph 节，理解流水线阶段顺序保证。 | 10分钟 |
 
-[事件处理器](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers)；[LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 下游阶段看到某条事件时，前置阶段对该事件的哪些写入已保证可见？
+2. 无效订单为什么要清理下游字段而不是跳过该序号？
 
 ## 开始前
 

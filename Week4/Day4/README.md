@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-源码中批量事件处理器；事件处理器文档。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 定位 `Processing/EventProcessor.cs` 与 `EventProcessorFactory.cs` 的主循环、进度发布与异常处理路径。 | 14分钟 |
+| 查阅 | [事件处理器（Event Handlers）](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers) | 对照文档中的事件处理循环伪代码与 6.0.1 源码。 | 6分钟 |
 
-[事件处理器](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers)；[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 消费者对外公布的 `Sequence` 是在逐条回调时更新，还是在批次结束/异常路径更新？
+2. 6.0.1 中 `EventProcessor` 与 `BatchEventProcessor` 分别服务于哪个处理器接口？
 
 ## 开始前
 
@@ -37,7 +45,7 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读要点
 
-- 6.0.1批量事件处理器的主循环与异常路径；Event Handlers处理伪代码。
+- **6.0.1 类名区分**：主线所用的 `IEventHandler<T>`（带 `endOfBatch` 参数）在 6.0.1 中由 `EventProcessorFactory` 创建 **`EventProcessor<T, ...>`** 执行；源码中名为 **`BatchEventProcessor<T, ...>`** 的类服务于整批回调接口 `IBatchEventHandler<T>`（`OnBatch(EventBatch<T>)`），阅读时以 `EventProcessor` 为主线，避免看错文件。
 - 寻找下一待处理序号、可用范围、回调、endOfBatch与进度更新。
 
 ## 120分钟执行顺序

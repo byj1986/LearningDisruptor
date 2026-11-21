@@ -18,9 +18,18 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-入门、源码中生产者配置；LMAX指南。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [入门（Getting Started）](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started) | `ProducerType.Single` 与 `ProducerType.Multi` 配置差异。 | 6分钟 |
+| 必读 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 查看 `SequencerFactory` 默认配置及 `ProducerType` 分支。 | 8分钟 |
+| 查阅 | [LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html) | 多生产者发布语义与顺序说明。 | 6分钟 |
 
-[入门](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started)；[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)；[LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 为什么多生产者不能继续沿用第6～13天的 `ProducerType.Single`？
+2. 单个生产者的局部顺序与跨生产者的全局消费顺序有何区别？
 
 ## 开始前
 
@@ -39,6 +48,7 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 - 单生产者与多生产者配置；多生产者如何分配唯一RingBuffer序号。
 - 阅读生产者模式说明，区分业务编号顺序与框架发布序号。
+- **6.0.1 配置说明**：本日将前几天的显式 `ProducerType.Single` 切换为 `ProducerType.Multi`（注意 6.0.1 双参构造默认就是 `ProducerType.Multi`，但在代码中仍建议显式写出以防歧义）。
 
 ## 120分钟执行顺序
 

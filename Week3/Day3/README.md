@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-事件处理器；LMAX指南消费者依赖图。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [事件处理器（Event Handlers）](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers) | 并行分支与多前置汇合（`HandleEventsWith(a, b).Then(c)` 或 `After(a, b)`）配置。 | 10分钟 |
+| 必读 | [LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html) | Consumer Dependency Graph 中的菱形拓扑（Diamond）。 | 10分钟 |
 
-[事件处理器](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers)；[LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 汇合阶段等待的是哪几个前置序号的最小值？
+2. 并行分支为什么只能各自写互不重叠的独占字段？
 
 ## 开始前
 

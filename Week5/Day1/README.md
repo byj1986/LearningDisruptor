@@ -18,9 +18,19 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-复习入门、发布与背压、事件处理器、等待策略。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 复习 | [入门（Getting Started）](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started) | 回看配置与生命周期入口，梳理可配置参数边界。 | 5分钟 |
+| 复习 | [发布与背压（Publication Options）](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options) | 回看发布协议与满时策略，核对过载统计口径。 | 5分钟 |
+| 复习 | [事件处理器（Event Handlers）](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers) | 回看拓扑依赖、异常处理与关闭路径。 | 5分钟 |
+| 复习 | [等待策略（Wait Strategies）](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies) | 回看策略选择及与 6.0.1 的接口对应。 | 5分钟 |
 
-[入门](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started)；[发布与背压](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options)；[事件处理器](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers)；[等待策略](https://github.com/disruptor-net/Disruptor-net/wiki/Wait-strategies)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 哪些配置决定业务结果语义，哪些配置主要影响吞吐、延迟和 CPU？
+2. 如何在同一入口中固定下供第22～24天对照使用的统一订单规格？
 
 ## 开始前
 
@@ -66,7 +76,7 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ### 105～120分钟：验收与复盘
 
-- [ ] 在README记录每个场景的实际命令、预期关系和结果。确保下一天可直接复用正常单生产单消费场景。
+- [ ] 在README记录每个场景的实际命令、预期关系和结果。同时固定后续第22～24天对照使用的统一业务规格：正常全有效场景（每条金额100分、有效费用10分）与无效订单场景（沿用第12天规则：编号能被10整除则无效、无效费用0分），确保下一天 Channel 版本直接对齐，不发生规则漂移。
 
 ## 验证场景与预期
 

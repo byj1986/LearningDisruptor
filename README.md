@@ -4,7 +4,7 @@
 
 每日说明采用120分钟实验单元，可拆成两次60分钟。每个README都有6段执行步骤、3组验证场景、排错提示、验收问题及空白实验表；预期结果与实际记录分开填写。先完成核心验收再做选做，源码阅读固定对照Disruptor 6.0.1对应提交。
 
-核心阅读已改用免费官方文章；原书章节对照、文章范围和自写复习笔记见[阅读资料.md](阅读资料.md)，每天README提供直接链接。
+核心阅读已改用免费官方文章；原书章节对照、全部25天阅读范围和自写复习笔记见[阅读资料.md](阅读资料.md)，每天README提供直接链接。
 
 ## 开始使用
 
@@ -18,9 +18,9 @@ dotnet build ./LearningDisruptor.sln -c Release
 dotnet run --project ./Week1/Day1/Fundamentals.ConcurrencyLab.csproj
 ```
 
-目标框架net10.0；global.json使用本机检测到的SDK 10.0.402。Disruptor.OrderPipeline已声明Disruptor 6.0.1，其余项目仅依赖.NET自带库。首次还原需要访问nuget.org。
+所有空项目目标框架均为 `net10.0`，使用本机已安装的 .NET 10+ SDK 构建（当前仓库未配置 `global.json`）。`Disruptor.OrderPipeline` 已声明 `Disruptor 6.0.1`，其余项目仅依赖 .NET 自带库。首次还原需要访问 nuget.org。
 
-完整计划见本仓库中的[Disrupt学习计划.md](Disrupt学习计划.md)。本目录中没有预先完成的事件模型、处理器、同步练习或性能实验。
+全局总纲、项目复用与关键版本备忘见[Disrupt学习计划.md](Disrupt学习计划.md)；每日120分钟细化步骤、验证场景与验收表统一以各 `WeekM/DayN/README.md` 为单一事实源。本目录中没有预先完成的事件模型、处理器、同步练习或性能实验。
 
 ## 每日导航
 

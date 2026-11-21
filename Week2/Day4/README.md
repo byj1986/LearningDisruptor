@@ -18,9 +18,17 @@ dotnet run --project "../Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-发布与背压的 Batches；事件处理器。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [发布与背压（Publication Options）](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options) | 只读 Batches 节，核对批量申请与发布的上下界签名。 | 10分钟 |
+| 必读 | [事件处理器（Event Handlers）](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers) | 理解 `OnEvent` 中的 `endOfBatch` 语义与消费批次形成方式。 | 10分钟 |
 
-[发布与背压](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options)；[事件处理器](https://github.com/disruptor-net/Disruptor-net/wiki/Event-Handlers)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. `RingBuffer.Next(n)` 返回的是该批的起始序号还是结束序号？
+2. 为什么消费者看到的 `endOfBatch` 边界不一定与生产者发布批次一致？
 
 ## 开始前
 
@@ -78,6 +86,7 @@ dotnet run --project "../Day1/Disruptor.OrderPipeline.csproj"
 
 ## 卡住时先检查
 
+- **`RingBuffer.Next(n)` 返回的是该批的上界 `hi`**，不是起始序号；起始序号为 `lo = hi - n + 1`，发布时调用 `Publish(lo, hi)`，切勿把返回值误当 `lo`。
 - 避免最后一批仍强行发布64条。
 - 先验证全部正确，再比较调用与协调开销；逐条输出会干扰批次观察。
 

@@ -18,9 +18,17 @@ dotnet run --project "../Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-入门、LMAX指南。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [入门（Getting Started）](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started) | 事件预分配与固定 2 的幂容量说明。 | 10分钟 |
+| 必读 | [LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html) | Ring Buffer 槽位回绕与事件对象生命周期说明。 | 10分钟 |
 
-[入门](https://github.com/disruptor-net/Disruptor-net/wiki/Getting-Started)；[LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 槽位对象何时可以被生产者再次覆盖？
+2. 消费者保存对象引用与保存字段副本有什么本质区别？
 
 ## 开始前
 

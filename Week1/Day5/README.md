@@ -20,13 +20,21 @@ dotnet run --project "../Day4/Fundamentals.ChannelLab.csproj"
 
 ## 阅读
 
-LMAX指南的核心概念；复习数组、序号、Stopwatch。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html) | Core Concepts 中的 Ring Buffer 与 Sequence 概念；理解逻辑序号与环形槽位。 | 14分钟 |
+| 查阅 | [Stopwatch类](https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.stopwatch?view=net-10.0) | 注解与 Elapsed；确认用于测量耗时起止的基本用法。 | 6分钟 |
 
-[LMAX指南](https://lmax-exchange.github.io/disruptor/user-guide/index.html)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 逻辑序号和数组下标分别解决什么问题？
+2. 为什么不能仅凭“生产者发完”就停止计时？
 
 ## 开始前
 
-先核对全程第4天的核心验收；记录未通过项。本日复用项目位置见上方链接。
+先核对全程第4天的核心验收；记录未通过项。本日使用上方新建的环形缓冲区项目，并在对照阶段回看第4天的 Channel 项目。
 
 ## 本日核心概念
 

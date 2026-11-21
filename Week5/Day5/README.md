@@ -20,9 +20,17 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 ## 阅读
 
-回顾全计划与实验记录；按问题回查源码和文档。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 复习 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 仅按前24天遗留问题回查对应源码实现，不要求通读全库。 | 10分钟 |
+| 复习 | [阅读资料索引](../../阅读资料.md) | 按未通过验收项定向回查对应官方文章与复习要点。 | 10分钟 |
 
-[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 哪些结论来自本机实测事实，哪些属于机制推断或未验证前提？
+2. 如果交给另一位开发者从根 README 开始复现，哪一步最容易出错？
 
 ## 开始前
 

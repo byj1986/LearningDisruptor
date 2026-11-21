@@ -61,6 +61,10 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 ### 00～10分钟：准备与预测
 
 - [ ] 两边固定容量1024、单生产单消费、满时等待、同一业务计算；移除热路径日志和完整性集合，保留完成计数及校验和。
+- [ ] **锁定公平性关键参数**并写入配置表：
+  - Disruptor 必须显式配置 **`ProducerType.Single`**（不要用 6.0.1 默认构造的 `Multi`），与 Channel 的 `SingleWriter = true, SingleReader = true` 对齐；
+  - 明确固定 Disruptor 所用 **`IWaitStrategy`**（建议至少固定一组省 CPU 策略如 `BlockingWaitStrategy` / `BlockingSpinWaitWaitStrategy`，再另测一组低延迟策略如 `YieldingWaitStrategy` 单独成表，不混比）；
+  - 明确记录 Channel 所用载荷类型（推荐主对比用 `readonly record struct`，若同时测 `class` 则单独列组）。
 
 ### 10～30分钟：定向阅读
 
@@ -92,6 +96,7 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 ## 卡住时先检查
 
+- 核对 Disruptor 确实使用了 `ProducerType.Single`，且明确标注了所选的 `IWaitStrategy` 与 Channel 载荷类型（`struct` / `class`）。
 - 时间区间与事件计数必须对应；不能用10秒生产量除以不含排空的10秒假装完成吞吐量。
 - 两种实现不要同时跑而争用CPU；单独运行并记录环境。
 

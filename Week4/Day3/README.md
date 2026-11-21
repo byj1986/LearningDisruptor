@@ -18,9 +18,17 @@ dotnet run --project "../../Week2/Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-源码中的多生产者协调器；Interlocked。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [Disruptor 6.0.1对应源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae) | 精读 `MultiProducerSequencer` 的 `Next`、`Publish`、`IsAvailable` 与 `GetHighestPublishedSequence`。 | 15分钟 |
+| 查阅 | [Interlocked类](https://learn.microsoft.com/zh-cn/dotnet/api/system.threading.interlocked?view=net-10.0) | 回顾 `CompareExchange` 语义，对照多生产者 CAS 申请序号循环。 | 5分钟 |
 
-[6.0.1源码](https://github.com/disruptor-net/Disruptor-net/tree/912e2334d91e336209dfb34b26b7d0a24d30a6ae)；[Interlocked](https://learn.microsoft.com/en-us/dotnet/api/system.threading.interlocked)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 为什么 `Cursor` 已经推进到 1，消费者仍不能越过未发布的 0 去消费 1？
+2. 可用性数组如何区分同一槽位在不同回绕轮次中的发布状态？
 
 ## 开始前
 

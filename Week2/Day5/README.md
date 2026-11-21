@@ -18,9 +18,17 @@ dotnet run --project "../Day1/Disruptor.OrderPipeline.csproj"
 
 ## 阅读
 
-发布与背压的 Backpressure、Alternatives to Next。
+| 顺序 | 文章链接 | 只读这些内容 | 时间预算 |
+| --- | --- | --- | --- |
+| 必读 | [发布与背压（Publication Options）](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options) | 只读 Backpressure 与 Alternatives to Next 两节，对照 `Next`、`TryNext` 与 `TryPublishEvent`。 | 14分钟 |
+| 复习 | [System.Threading.Channels库](https://learn.microsoft.com/zh-cn/dotnet/core/extensions/channels) | 回看有界 Channel 的 `BoundedChannelFullMode.Wait`，对比阻塞申请与异步等待。 | 6分钟 |
 
-[发布与背压](https://github.com/disruptor-net/Disruptor-net/wiki/Publication-Options)
+按表内范围读完核心材料约20分钟，选读另计。原书章节到文章的对照见[阅读资料](../../阅读资料.md)。
+
+**带着这两个问题读：**
+
+1. 缓冲区满时，生产者等待策略与消费者 `IWaitStrategy` 是同一回事吗？
+2. `TryNext` 与 `TryPublishEvent()` 在防止漏发协议上有什么差别？
 
 ## 开始前
 
@@ -39,6 +47,7 @@ dotnet run --project "../Day1/Disruptor.OrderPipeline.csproj"
 
 - Publication Options的Backpressure与Alternatives to Next。
 - 复习第4天的有界Channel；区分消费者等待策略与生产者满时策略。
+- **6.0.1 API 提示**：`TryNext` 和 `TryPublishEvent()` 均只在 `RingBuffer<T>` 上提供（`Disruptor<T>` 上没有）。除手动 `TryNext` + `try/finally Publish` 外，6.0.1 也提供 `using var scope = ringBuffer.TryPublishEvent()`（配合 `scope.TryGetEvent(out var e)`），仅在取得槽位时才于 `Dispose` 自动发布。
 
 ## 120分钟执行顺序
 

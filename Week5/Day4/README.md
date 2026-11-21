@@ -49,8 +49,9 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 以下为按本日实验重新组织的学习笔记：
 
-- 时间戳差应按Stopwatch.Frequency换算。记录起点是计划发送、实际尝试还是成功入队；这些起点包含的等待不同。
-- 百分位按本日规定的最近秩法计算，并记录样本数。实际发送速率低于目标时同时报告发送滞后，不能只保留较好看的P99。
+- 时间戳差应按 `Stopwatch.Frequency` 换算（在 .NET 7+ 中也可直接使用 `Stopwatch.GetElapsedTime(startTimestamp, endTimestamp)` 得到 `TimeSpan`，减少手工换算失误）。记录起点是计划发送、实际尝试还是成功入队；这些起点包含的等待不同。
+- 百分位按本日规定的最近秩法（Nearest-rank）计算：对升序排列的 `n` 个样本，0-based 下标为 `index = (int)Math.Ceiling(p * n) - 1`（例如 `1..100` 时 `P50 = sorted[49] = 50`，`P99 = sorted[98] = 99`），并记录样本数。实际发送速率低于目标时同时报告发送滞后，不能只保留较好看的P99。
+- **Windows 固定速率发压注意**：Windows 上 `Thread.Sleep(1)` / `Task.Delay(1)` 默认定时器分辨率约 15.6ms，无法按数万条/秒精准节拍发压（会导致消息积攒成大突发，使延迟严重失真）。固定目标速率请使用基于 `Stopwatch.GetTimestamp()` 的节拍控制（pacing/忙等节拍器）。
 
 ## 120分钟执行顺序
 
@@ -90,6 +91,7 @@ dotnet run --project "../Day2/Comparison.ChannelPipeline.csproj"
 
 ## 卡住时先检查
 
+- 不要用 `Thread.Sleep(1)` 或 `Task.Delay(1)` 控制高频率固定发送速率（Windows 默认约 15.6ms 粒度会把匀速流变成周期性突发），改用基于 `Stopwatch.GetTimestamp()` 的节拍等待。
 - 不要逐事件new记录对象或打印；这会把观测开销混进结果。
 - 所有处理器共享同一进程单调时钟；不要用DateTime.Now的变化直接当高精度耗时。
 
