@@ -59,12 +59,13 @@ internal static partial class Program
         // CreateContinuationTaskV2();
         // CreateParentChildTasks();
         // CreateParentChildTasksV2();
-        UnderstandingWaitAll();
+        // UnderstandingWaitAll();
         #endregion
 
         #region Part4 托管线程池
         // 阅读：托管线程池
         // https://learn.microsoft.com/zh-cn/dotnet/standard/threading/the-managed-thread-pool
+        GetSetMaxThreads();
         #endregion
 
         #region Part5 异步编程模型
