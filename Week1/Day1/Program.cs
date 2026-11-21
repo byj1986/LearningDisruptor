@@ -35,18 +35,31 @@ internal static partial class Program
             // await MakeBreakfastAsyncV4();
             // await MakeBreakfastAsyncV5();
             // await MakeBreakfastAsyncV6();
-            await MakeBreakfastAsyncV7();
+            // await MakeBreakfastAsyncV7();
         }
         finally
         {
             sw.Stop();
-            Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
+            // Log("早餐", $"耗时 {sw.ElapsedMilliseconds}ms");
         }
         #endregion
 
         #region Part3 基于任务的异步编程
         // 阅读：基于任务的异步编程
         // https://learn.microsoft.com/zh-cn/dotnet/standard/parallel-programming/task-based-asynchronous-programming
+        //TaskForEach();
+        // TasksForWords();
+        // CreateManualRunTask();
+        // CreateTaskWithTaskRun();
+        // CreateTaskWithTaskFactory();
+        // CreateGenericTaskWithTaskFactory();
+        // UnderstadingTaskOptions();
+        // UnderstadingTaskCulture();
+        // CreateContinuationTask();
+        // CreateContinuationTaskV2();
+        // CreateParentChildTasks();
+        // CreateParentChildTasksV2();
+        UnderstandingWaitAll();
         #endregion
 
         #region Part4 托管线程池
