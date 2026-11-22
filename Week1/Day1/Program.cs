@@ -65,12 +65,13 @@ internal static partial class Program
         #region Part4 托管线程池
         // 阅读：托管线程池
         // https://learn.microsoft.com/zh-cn/dotnet/standard/threading/the-managed-thread-pool
-        GetSetMaxThreads();
+        // GetSetMaxThreads();
         #endregion
 
         #region Part5 异步编程模型
         // 阅读：异步编程场景
         // https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios
+        await GetUsersAsync([1, 2, 3]);
         #endregion
     }
 }
