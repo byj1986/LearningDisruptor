@@ -71,7 +71,8 @@ internal static partial class Program
         #region Part5 异步编程模型
         // 阅读：异步编程场景
         // https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios
-        await GetUsersAsync([1, 2, 3]);
+        // await GetUsersAsync([1, 2, 3]);
+        await GetUsersAsyncV5([1, 2, 3]);
         #endregion
     }
 }
