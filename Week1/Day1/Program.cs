@@ -72,7 +72,16 @@ internal static partial class Program
         // 阅读：异步编程场景
         // https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios
         // await GetUsersAsync([1, 2, 3]);
-        await GetUsersAsyncV5([1, 2, 3]);
+        // await GetUsersAsyncV5([1, 2, 3]);
+        #endregion
+
+        #region Exercise
+        // CoreConcepts();
+        // AccumulateSync();
+        // AccumulateCompare();
+        // AccumulateCompareV2();
+        await AccumulateCompareV3();
+
         #endregion
     }
 }
